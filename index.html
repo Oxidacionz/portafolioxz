@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Portafolio - Developer Full Stack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Añadir Glide.js para los carruseles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.4.1/dist/css/glide.core.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.4.1/dist/css/glide.theme.min.css">
+  <script>
+    // Configuración de Tailwind para modo oscuro
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <style>
+    /* [Todos tus estilos CSS anteriores se mantienen igual] */
+    /* Animaciones personalizadas */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Nueva animación para la foto - SIEMPRE VISIBLE */
+    @keyframes photoEntrance {
+      0% {
+        opacity: 1;
+        transform: translateY(-100px) scale(0.9) rotate(-5deg);
+      }
+      30% {
+        opacity: 1;
+        transform: translateY(20px) scale(1.05) rotate(2deg);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-10px) scale(1.02) rotate(-1deg);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(5px) scale(1.01) rotate(0.5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+    }
+
+    /* Animación para el contenido del hero */
+    @keyframes contentEntrance {
+      0% {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      40% {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Animación para elementos que aparecen escalonados */
+    @keyframes staggeredFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animación para iconos de tecnologías */
+    @keyframes techBounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out;
+    }
+    
+    .animate-fadeInUp {
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .animate-photo-entrance {
+      animation: photoEntrance 1.8s ease-out forwards;
+      opacity: 1 !important;
+    }
+
+    .animate-content-entrance {
+      animation: contentEntrance 1.5s ease-out 0.5s forwards;
+      opacity: 0;
+    }
+
+    .animate-staggered-1 {
+      animation: staggeredFadeIn 0.8s ease-out 0.8s forwards;
+      opacity: 0;
+    }
+
+    .animate-staggered-2 {
+      animation: staggeredFadeIn 0.8s ease-out 1s forwards;
+      opacity: 0;
+    }
+
+    .animate-staggered-3 {
+      animation: staggeredFadeIn 0.8s ease-out 1.2s forwards;
+      opacity: 0;
+    }
+
+    .animate-tech-bounce {
+      animation: techBounce 2s ease-in-out infinite;
+    }
+    
+    /* Para elementos que se revelarán con scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    /* Clase que se añade cuando el elemento es visible */
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Estilos para el botón de modo oscuro */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dark-mode-toggle:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .dark-mode-toggle svg {
+      transition: transform 0.3s ease;
+    }
+
+    .dark .dark-mode-toggle {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Ocultar/mostrar iconos según el modo */
+    .dark .moon-icon {
+      display: block;
+    }
+
+    .dark .sun-icon {
+      display: none;
+    }
+
+    .moon-icon {
+      display: none;
+    }
+
+    .sun-icon {
+      display: block;
+    }
+
+    /* Estilos para la foto de perfil */
+    .profile-image {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(14, 165, 233, 0.2);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .dark .profile-image {
+      border: 4px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .profile-image:hover {
+      transform: scale(1.05);
+      border-color: rgba(14, 165, 233, 0.4);
+    }
+
+    /* Contenedor de la foto - SIEMPRE VISIBLE */
+    .photo-container {
+      position: relative;
+      opacity: 1 !important;
+    }
+
+    /* Estilos para enlaces de contacto */
+    .contact-link {
+      transition: all 0.3s ease;
+    }
+
+    .contact-link:hover {
+      transform: translateX(5px);
+    }
+
+    /* Efecto de brillo en la foto */
+    .profile-glow {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      background: linear-gradient(45deg, #3b82f6, #06b6d4, #10b981);
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0;
+      animation: glowPulse 2s ease-in-out 1.8s forwards;
+      z-index: -1;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      50% {
+        opacity: 0.3;
+        transform: scale(1.1);
+      }
+      100% {
+        opacity: 0.2;
+        transform: scale(1);
+      }
+    }
+
+    /* Efecto de partículas flotantes */
+    .floating-particle {
+      position: absolute;
+      background: rgba(14, 165, 233, 0.3);
+      border-radius: 50%;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(180deg);
+      }
+    }
+
+    /* Partículas específicas */
+    .particle-1 {
+      width: 8px;
+      height: 8px;
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .particle-2 {
+      width: 6px;
+      height: 6px;
+      top: 60%;
+      right: 15%;
+      animation-delay: 0.5s;
+    }
+
+    .particle-3 {
+      width: 4px;
+      height: 4px;
+      bottom: 30%;
+      left: 20%;
+      animation-delay: 1s;
+    }
+
+    /* Estilos para iconos de tecnologías */
+    .tech-icon {
+      transition: all 0.3s ease;
+    }
+
+    .tech-icon:hover {
+      transform: scale(1.2);
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Colores específicos para tecnologías */
+    .python { color: #3776AB; }
+    .javascript { color: #F7DF1E; }
+    .react { color: #61DAFB; }
+    .nodejs { color: #339933; }
+    .fastapi { color: #009688; }
+    .postgresql { color: #336791; }
+    .mongodb { color: #47A248; }
+    .docker { color: #2496ED; }
+    .git { color: #F05032; }
+    .html5 { color: #E34F26; }
+    .css3 { color: #1572B6; }
+    .tailwind { color: #06B6D4; }
+
+    /* Estilos para la información personal debajo de la foto */
+    .personal-info {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .personal-info h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-bottom: 0.5rem;
+    }
+
+    .dark .personal-info h1 {
+      color: #7dd3fc;
+    }
+
+    .personal-info .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0ea5e9;
+      margin-bottom: 1rem;
+    }
+
+    .dark .personal-info .title {
+      color: #38bdf8;
+    }
+
+    .personal-info .description {
+      font-size: 1.1rem;
+      color: #4b5563;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .dark .personal-info .description {
+      color: #d1d5db;
+    }
+
+    /* Estilos para los enlaces de contacto */
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .contact-link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(14, 165, 233, 0.1);
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: #0369a1;
+    }
+
+    .dark .contact-link-item {
+      background: rgba(56, 189, 248, 0.1);
+      color: #7dd3fc;
+    }
+
+    .contact-link-item:hover {
+      transform: translateY(-2px);
+      background: rgba(14, 165, 233, 0.2);
+    }
+
+    .dark .contact-link-item:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+
+    /* Estilos para los carruseles en el hero - COMPACTOS */
+    .hero-carousel {
+      margin: 1rem 0;
+    }
+
+    .hero-carousel h3 {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 0.75rem;
+    }
+
+    .dark .hero-carousel h3 {
+      color: #7dd3fc;
+    }
+
+    .hero-carousel .glide__slide {
+      padding: 0 0.5rem;
+    }
+
+    /* Tarjetas ultra compactas para el hero */
+    .project-card-hero, .certificate-card-hero {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      max-width: 240px;
+      width: 100%;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dark .project-card-hero, .dark .certificate-card-hero {
+      background: #1f2937;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-card-hero:hover, .certificate-card-hero:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .dark .project-card-hero:hover, .dark .certificate-card-hero:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .project-image-hero {
+      width: 100%;
+      height: 70px;
+      object-fit: cover;
+    }
+
+    .project-content-hero, .certificate-content-hero {
+      padding: 0.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-title-hero, .certificate-title-hero {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 0.2rem;
+      line-height: 1.1;
+    }
+
+    .dark .project-title-hero, .dark .certificate-title-hero {
+      color: #7dd3fc;
+    }
+
+    .project-description-hero, .certificate-description-hero {
+      color: #4b5563;
+      font-size: 0.65rem;
+      line-height: 1.1;
+      margin-bottom: 0.3rem;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .dark .project-description-hero, .dark .certificate-description-hero {
+      color: #d1d5db;
+    }
+
+    .project-tech-hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .tech-tag-hero {
+      background: rgba(14, 165, 233, 0.1);
+      color: #0369a1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.5rem;
+      font-size: 0.55rem;
+      font-weight: 500;
+    }
+
+    .dark .tech-tag-hero {
+      background: rgba(56, 189, 248, 0.1);
+      color: #7dd3fc;
+    }
+
+    .project-link-hero, .certificate-link-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      color: #0ea5e9;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.6rem;
+    }
+
+    .dark .project-link-hero, .dark .certificate-link-hero {
+      color: #38bdf8;
+    }
+
+    .project-link-hero:hover, .certificate-link-hero:hover {
+      color: #0369a1;
+      transform: translateX(2px);
+    }
+
+    .dark .project-link-hero:hover, .dark .certificate-link-hero:hover {
+      color: #7dd3fc;
+    }
+
+    .glide__arrows {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .glide__arrow {
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      pointer-events: all;
+      font-size: 0.7rem;
+    }
+
+    .dark .glide__arrow {
+      background: rgba(31, 41, 55, 0.8);
+      color: white;
+    }
+
+    .glide__arrow:hover {
+      background: rgba(14, 165, 233, 0.9);
+      color: white;
+    }
+
+    .glide__bullets {
+      display: flex;
+      justify-content: center;
+      gap: 0.3rem;
+      margin-top: 0.75rem;
+    }
+
+    .glide__bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(14, 165, 233, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .glide__bullet:hover, .glide__bullet--active {
+      background: rgba(14, 165, 233, 0.9);
+    }
+
+    .dark .glide__bullet {
+      background: rgba(56, 189, 248, 0.3);
+    }
+
+    .dark .glide__bullet:hover, .dark .glide__bullet--active {
+      background: rgba(56, 189, 248, 0.9);
+    }
+
+    /* Ajustes para el contenedor de tecnologías */
+    .tech-section {
+      margin-top: 1.5rem;
+    }
+
+    /* Asegurar que todo quepa en la pantalla */
+    .right-column {
+      max-height: 80vh;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .right-column::-webkit-scrollbar-track {
+      background: rgba(14, 165, 233, 0.1);
+      border-radius: 2px;
+    }
+
+    .right-column::-webkit-scrollbar-thumb {
+      background: rgba(14, 165, 233, 0.3);
+      border-radius: 2px;
+    }
+
+    .right-column::-webkit-scrollbar-thumb:hover {
+      background: rgba(14, 165, 233, 0.5);
+    }
+
+    /* NUEVOS ESTILOS PARA RESPONSIVIDAD */
+    
+    /* Ajustes para móviles */
+    @media (max-width: 768px) {
+      /* Layout principal */
+      .flex-col {
+        flex-direction: column;
+      }
+      
+      /* Foto de perfil más pequeña en móviles */
+      .profile-image {
+        width: 200px;
+        height: 200px;
+      }
+      
+      /* Texto más pequeño en móviles */
+      .personal-info h1 {
+        font-size: 1.8rem;
+      }
+      
+      .personal-info .title {
+        font-size: 1.2rem;
+      }
+      
+      .personal-info .description {
+        font-size: 0.9rem;
+        padding: 0 1rem;
+      }
+      
+      /* Enlaces de contacto en columna en móviles */
+      .contact-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+      }
+      
+      .contact-link-item {
+        width: 200px;
+        justify-content: center;
+      }
+      
+      /* Carruseles con tamaño fijo en móviles */
+      .hero-carousel {
+        max-width: 100%;
+        overflow: hidden;
+      }
+      
+      .project-card-hero, .certificate-card-hero {
+        max-width: 100%;
+        height: 130px;
+        margin: 0 auto;
+      }
+      
+      /* Ajustes para el grid de tecnologías */
+      .tech-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.8rem;
+      }
+      
+      /* Botón de modo oscuro más pequeño */
+      .dark-mode-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+      }
+      
+      /* Contenedor derecho sin scroll en móviles */
+      .right-column {
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+      }
+      
+      /* Padding reducido en móviles */
+      .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+    
+    /* Ajustes para tablets */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .profile-image {
+        width: 240px;
+        height: 240px;
+      }
+      
+      .personal-info h1 {
+        font-size: 2rem;
+      }
+      
+      .project-card-hero, .certificate-card-hero {
+        max-width: 220px;
+      }
+    }
+    
+    /* Ajustes para texto que se sale de la pantalla */
+    .text-responsive {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    
+    /* Asegurar que el contenido no se salga del contenedor */
+    .content-container {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    /* Tamaño fijo para carruseles */
+    .carousel-container {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-sky-100 to-white text-gray-900 dark:bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 dark:text-white content-container">
+  <!-- Botón de modo oscuro -->
+  <button id="darkModeToggle" class="dark-mode-toggle">
+    <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+    <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+
+  <!-- HERO ACTUALIZADO - Con carruseles ultra compactos -->
+  <section class="min-h-screen flex items-center justify-center px-6 overflow-hidden py-8">
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+        
+        <!-- Columna izquierda - Foto con información personal debajo -->
+        <div class="flex-1 flex flex-col items-center">
+          <div class="photo-container animate-photo-entrance">
+            <!-- Partículas flotantes -->
+            <div class="floating-particle particle-1"></div>
+            <div class="floating-particle particle-2"></div>
+            <div class="floating-particle particle-3"></div>
+            
+            <div class="profile-glow"></div>
+            <img 
+              src="https://avatars.githubusercontent.com/u/131562475?s=400&u=78f194907bef27497300afa982c0eae148cd92ea&v=4" 
+              alt="Joseph Bracho - Desarrollador Full Stack"
+              class="profile-image"
+              id="githubProfileImage"
+            >
+            <!-- Elemento decorativo -->
+            <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-sky-500 dark:bg-sky-400 rounded-full animate-pulse"></div>
+          </div>
+
+          <!-- Información personal debajo de la foto CON ENLACES DE CONTACTO -->
+          <div class="personal-info animate-staggered-1 text-responsive">
+            <h1>Joseph Bracho</h1>
+            <div class="title">Desarrollador Full Stack</div>
+            <p class="description">
+              Creo experiencias digitales modernas, limpias y con una sensación fresca y abierta. 
+              Apasionado por construir aplicaciones completas, eficientes y hermosas.
+            </p>
+            
+            <!-- Enlaces de contacto integrados -->
+            <div class="contact-links">
+              <a href="https://github.com/Oxidacionz" target="_blank" class="contact-link-item">
+                <i class="fab fa-github"></i>
+                GitHub
+              </a>
+              <a href="https://www.linkedin.com/in/josephbrachoxz/" target="_blank" class="contact-link-item">
+                <i class="fab fa-linkedin"></i>
+                LinkedIn
+              </a>
+              <a href="mailto:josephbrachovillanueva2@gmail.com" class="contact-link-item">
+                <i class="fas fa-envelope"></i>
+                Email
+              </a>
+              <!-- Botón de CV agregado -->
+              <a href="#" class="contact-link-item" id="cvButton">
+                <i class="fas fa-file-pdf"></i>
+                CV
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha - Con carruseles ultra compactos y scroll -->
+        <div class="flex-1 right-column">
+          <!-- Botones de acción -->
+          <div class="action-buttons animate-content-entrance">
+            <h3 class="text-2xl font-bold text-sky-700 dark:text-sky-400 mb-4 text-center lg:text-left text-responsive">
+              Explora Mi Trabajo
+            </h3>
+          </div>
+
+          <!-- Carrusel de proyectos integrado en el hero -->
+          <div class="hero-carousel animate-staggered-1 carousel-container">
+            <h3 class="text-responsive">Mis Proyectos</h3>
+            <div class="glide proyectos-hero">
+              <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                  <!-- Proyecto 1 -->
+                  <li class="glide__slide">
+                    <div class="project-card-hero">
+                      <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="TaskFlow" class="project-image-hero">
+                      <div class="project-content-hero">
+                        <h3 class="project-title-hero text-responsive">TaskFlow</h3>
+                        <p class="project-description-hero text-responsive">Aplicación full stack para gestionar tareas, con FastAPI + React.</p>
+                        <div class="project-tech-hero">
+                          <span class="tech-tag-hero">Python</span>
+                          <span class="tech-tag-hero">FastAPI</span>
+                          <span class="tech-tag-hero">React</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  
+                  <!-- Proyecto 2 -->
+                  <li class="glide__slide">
+                    <div class="project-card-hero">
+                      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="StoreAPI" class="project-image-hero">
+                      <div class="project-content-hero">
+                        <h3 class="project-title-hero text-responsive">StoreAPI</h3>
+                        <p class="project-description-hero text-responsive">API REST completa para productos, carrito y auth sólida.</p>
+                        <div class="project-tech-hero">
+                          <span class="tech-tag-hero">Python</span>
+                          <span class="tech-tag-hero">FastAPI</span>
+                          <span class="tech-tag-hero">JWT</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  
+                  <!-- Proyecto 3 -->
+                  <li class="glide__slide">
+                    <div class="project-card-hero">
+                      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="AutoScraper" class="project-image-hero">
+                      <div class="project-content-hero">
+                        <h3 class="project-title-hero text-responsive">AutoScraper</h3>
+                        <p class="project-description-hero text-responsive">Bot de scraping con exportación automática y CLI elegante.</p>
+                        <div class="project-tech-hero">
+                          <span class="tech-tag-hero">Python</span>
+                          <span class="tech-tag-hero">Selenium</span>
+                          <span class="tech-tag-hero">BeautifulSoup</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Controles del carrusel -->
+              <div class="glide__arrows" data-glide-el="controls">
+                <button class="glide__arrow glide__arrow--left" data-glide-dir="<">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="glide__arrow glide__arrow--right" data-glide-dir=">">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <!-- Indicadores -->
+              <div class="glide__bullets" data-glide-el="controls[nav]">
+                <button class="glide__bullet" data-glide-dir="=0"></button>
+                <button class="glide__bullet" data-glide-dir="=1"></button>
+                <button class="glide__bullet" data-glide-dir="=2"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Carrusel de certificados integrado en el hero -->
+          <div class="hero-carousel animate-staggered-2 carousel-container">
+            <h3 class="text-responsive">Mis Certificados</h3>
+            <div class="glide certificados-hero">
+              <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                  <!-- Certificado 1 -->
+                  <li class="glide__slide">
+                    <div class="certificate-card-hero">
+                      <div class="certificate-content-hero">
+                        <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-1">
+                          <i class="fas fa-code text-lg text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <h3 class="certificate-title-hero text-responsive">Python Avanzado</h3>
+                        <p class="certificate-description-hero text-responsive">Curso completo de Python avanzado con enfoque en desarrollo backend.</p>
+                        <div class="mt-1">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Platzi - 2024</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  
+                  <!-- Certificado 2 -->
+                  <li class="glide__slide">
+                    <div class="certificate-card-hero">
+                      <div class="certificate-content-hero">
+                        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-1">
+                          <i class="fab fa-react text-lg text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <h3 class="certificate-title-hero text-responsive">React Profesional</h3>
+                        <p class="certificate-description-hero text-responsive">Desarrollo de aplicaciones modernas con React, hooks y context API.</p>
+                        <div class="mt-1">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">FreeCodeCamp - 2024</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  
+                  <!-- Certificado 3 -->
+                  <li class="glide__slide">
+                    <div class="certificate-card-hero">
+                      <div class="certificate-content-hero">
+                        <div class="w-10 h-10 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-1">
+                          <i class="fab fa-aws text-lg text-red-600 dark:text-red-400"></i>
+                        </div>
+                        <h3 class="certificate-title-hero text-responsive">AWS Fundamentals</h3>
+                        <p class="certificate-description-hero text-responsive">Fundamentos de Amazon Web Services para despliegue de aplicaciones.</p>
+                        <div class="mt-1">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">AWS - 2023</span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- Controles del carrusel -->
+              <div class="glide__arrows" data-glide-el="controls">
+                <button class="glide__arrow glide__arrow--left" data-glide-dir="<">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="glide__arrow glide__arrow--right" data-glide-dir=">">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <!-- Indicadores -->
+              <div class="glide__bullets" data-glide-el="controls[nav]">
+                <button class="glide__bullet" data-glide-dir="=0"></button>
+                <button class="glide__bullet" data-glide-dir="=1"></button>
+                <button class="glide__bullet" data-glide-dir="=2"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tecnologías - AHORA VISIBLE -->
+          <div class="tech-section animate-staggered-3">
+            <h3 class="text-2xl font-bold text-sky-700 dark:text-sky-400 mb-4 text-center lg:text-left text-responsive">
+              Tecnologías que Domino
+            </h3>
+            <div class="tech-grid">
+              <div class="flex flex-col items-center tech-icon python animate-tech-bounce" style="animation-delay: 0s;">
+                <i class="fab fa-python text-3xl mb-1"></i>
+                <span class="text-xs">Python</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon javascript animate-tech-bounce" style="animation-delay: 0.1s;">
+                <i class="fab fa-js-square text-3xl mb-1"></i>
+                <span class="text-xs">JavaScript</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon react animate-tech-bounce" style="animation-delay: 0.2s;">
+                <i class="fab fa-react text-3xl mb-1"></i>
+                <span class="text-xs">React</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon nodejs animate-tech-bounce" style="animation-delay: 0.3s;">
+                <i class="fab fa-node-js text-3xl mb-1"></i>
+                <span class="text-xs">Node.js</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon fastapi">
+                <i class="fas fa-bolt text-3xl mb-1 text-green-500"></i>
+                <span class="text-xs">FastAPI</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon postgresql">
+                <i class="fas fa-database text-3xl mb-1"></i>
+                <span class="text-xs">PostgreSQL</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon mongodb">
+                <i class="fas fa-leaf text-3xl mb-1 text-green-600"></i>
+                <span class="text-xs">MongoDB</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon docker animate-tech-bounce" style="animation-delay: 0.4s;">
+                <i class="fab fa-docker text-3xl mb-1"></i>
+                <span class="text-xs">Docker</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon git">
+                <i class="fab fa-git-alt text-3xl mb-1"></i>
+                <span class="text-xs">Git</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon html5">
+                <i class="fab fa-html5 text-3xl mb-1"></i>
+                <span class="text-xs">HTML5</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon css3">
+                <i class="fab fa-css3-alt text-3xl mb-1"></i>
+                <span class="text-xs">CSS3</span>
+              </div>
+              <div class="flex flex-col items-center tech-icon tailwind">
+                <i class="fab fa-css3-alt text-3xl mb-1 text-cyan-500"></i>
+                <span class="text-xs">Tailwind</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE MI -->
+  <section class="py-20 px-6 bg-white/70 dark:bg-gray-800/70 backdrop-blur-md reveal">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold text-sky-800 dark:text-sky-400 mb-8 text-responsive">Mi Enfoque de Desarrollo</h2>
+      <div class="grid md:grid-cols-2 gap-8 text-left">
+        <div class="bg-white/50 dark:bg-gray-700/50 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-sky-700 dark:text-sky-300 mb-4 text-responsive">💡 Filosofía de Trabajo</h3>
+          <p class="text-gray-700 dark:text-gray-300 text-responsive">
+            Creo en la combinación de arquitectura limpia, buenas prácticas y estética moderna. 
+            Cada proyecto debe transmitir claridad, eficiencia y una experiencia de usuario excepcional.
+          </p>
+        </div>
+        <div class="bg-white/50 dark:bg-gray-700/50 rounded-xl p-6">
+          <h3 class="text-xl font-semibold text-sky-700 dark:text-sky-300 mb-4 text-responsive">🚀 Especialidades</h3>
+          <p class="text-gray-700 dark:text-gray-300 text-responsive">
+            Desarrollo full stack con Python y JavaScript, APIs RESTful, aplicaciones escalables 
+            y soluciones cloud-ready. Enfocado en crear productos que marquen la diferencia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-6 text-center text-gray-600 dark:text-gray-400">
+    © 2025 Joseph Bracho — Portafolio Full Stack
+  </footer>
+  
+  <!-- Scripts para los carruseles -->
+  <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide@3.4.1/dist/glide.min.js"></script>
+  
+  <script>
+    // Solución mejorada para las animaciones
+    document.addEventListener('DOMContentLoaded', function() {
+      // Configuración del Intersection Observer
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Añadimos la clase visible para mostrar el elemento inmediatamente
+            entry.target.classList.add('visible');
+            // Y luego la animación para un efecto más suave
+            setTimeout(() => {
+              entry.target.classList.add('animate-fadeInUp');
+            }, 50);
+          }
+        });
+      }, { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      // Observamos todos los elementos con clase reveal
+      document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+      });
+
+      // Inicializar carrusel de proyectos en el hero
+      new Glide('.proyectos-hero', {
+        type: 'carousel',
+        startAt: 0,
+        perView: 1,
+        gap: 10,
+        autoplay: 3000,
+        hoverpause: true,
+        animationDuration: 600,
+        breakpoints: {
+          1024: {
+            perView: 1
+          },
+          768: {
+            perView: 1
+          }
+        }
+      }).mount();
+
+      // Inicializar carrusel de certificados en el hero
+      new Glide('.certificados-hero', {
+        type: 'carousel',
+        startAt: 0,
+        perView: 1,
+        gap: 10,
+        autoplay: 3500,
+        hoverpause: true,
+        animationDuration: 600,
+        breakpoints: {
+          1024: {
+            perView: 1
+          },
+          768: {
+            perView: 1
+          }
+        }
+      }).mount();
+
+      // Funcionalidad del modo oscuro
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      
+      // Verificar preferencia del sistema o guardada
+      const savedMode = localStorage.getItem('darkMode');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      // Aplicar modo inicial
+      if (savedMode === 'true' || (!savedMode && systemPrefersDark)) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('darkMode', 'false');
+      }
+
+      // Toggle del modo oscuro
+      darkModeToggle.addEventListener('click', function() {
+        const html = document.documentElement;
+        const isDark = html.classList.contains('dark');
+        
+        if (isDark) {
+          html.classList.remove('dark');
+          localStorage.setItem('darkMode', 'false');
+        } else {
+          html.classList.add('dark');
+          localStorage.setItem('darkMode', 'true');
+        }
+        
+        // Animación del botón
+        this.style.transform = 'scale(1.1) rotate(180deg)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1) rotate(0deg)';
+        }, 300);
+      });
+
+      // Manejo de errores en la imagen de GitHub
+      const profileImage = document.getElementById('githubProfileImage');
+      profileImage.addEventListener('error', function() {
+        // Si falla la carga de la imagen de GitHub, usar una por defecto
+        this.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=774&q=80';
+        this.alt = 'Joseph Bracho - Foto por defecto';
+      });
+
+      // Añadir loading lazy a la imagen
+      profileImage.loading = 'lazy';
+
+      // Efecto adicional: Reiniciar animación al hacer clic en la foto
+      const photoContainer = document.querySelector('.photo-container');
+      photoContainer.addEventListener('click', function() {
+        this.style.animation = 'none';
+        setTimeout(() => {
+          this.style.animation = 'photoEntrance 1.8s ease-out forwards';
+        }, 10);
+      });
+
+      // Forzar que la foto sea siempre visible
+      const forcePhotoVisibility = () => {
+        const photo = document.querySelector('.photo-container');
+        photo.style.opacity = '1';
+        photo.style.visibility = 'visible';
+      };
+
+      // Ejecutar inmediatamente y en cada frame durante la carga
+      forcePhotoVisibility();
+      setTimeout(forcePhotoVisibility, 100);
+      setTimeout(forcePhotoVisibility, 500);
+
+      // Animación para iconos de tecnologías
+      const techIcons = document.querySelectorAll('.tech-icon');
+      techIcons.forEach((icon, index) => {
+        icon.style.animationDelay = `${index * 0.1}s`;
+      });
+
+      // Función para manejar el botón de CV - CON TU ENLACE ESPECÍFICO
+      const cvButton = document.getElementById('cvButton');
+      cvButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Tu enlace de Google Drive
+        const fileId = '1e98L_5HtOsz8hn-ZlwvKxt1UYNDiEBqq';
+        const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        
+        // Crear enlace temporal para descarga
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.target = '_blank';
+        link.download = 'Joseph_Bracho_CV.pdf';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    });
+  </script>
+</body>
+</html>
